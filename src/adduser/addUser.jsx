@@ -1,12 +1,13 @@
 
 import React from 'react';
-import { useParams , Outlet,useNavigate } from 'react-router';
+import { useParams , Outlet,useNavigate,useLocation } from 'react-router';
 import style from '../style.module.css'
 
 const AddUser = ()=>{
 
     const {userId} = useParams();
     const Navigate =useNavigate();
+    const location =useLocation();
     console.log(userId);
 
     return (
@@ -45,7 +46,7 @@ const AddUser = ()=>{
                     </div>
 
                     <div className="col-12 text-start">
-                        <button type="button" class="btn btn-danger ms-2" onClick={()=>Navigate('/user')}>بازگشت</button>
+                        <button type="button" class="btn btn-danger ms-2" onClick={()=>Navigate('/user',{state:{x:"react"}})}>بازگشت</button>
                         <button type="submit" class="btn btn-primary" >
                         {userId ? "ویرایش " : "افزودن " }
                         </button>
