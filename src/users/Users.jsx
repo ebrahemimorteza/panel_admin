@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import style from '../style.module.css'
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 import axios from 'axios';
+import { meAxios } from '../meAxios/meAxios';
 
 const Users = ()=>{
     const [user,setUser]=useState([]);
+    const [mainuser,setMainUser]=useState([]);
+    const navigte=useNavigate()
     useEffect(()=>{
-        axios.get('https://jsonplaceholder.typicode.com/users').then(res=>{
+        meAxios.get('https://jsonplaceholder.typicode.com/users').then(res=>{
             console.log(res);
             setUser(res.data)
+            setMainUser(res.data)
 
         }).catch(erro=>{
             console.log("error oops");
         })
     },[])
-const handleDelete=(id)=>{
+const handleDelete=(userId)=>{alert(userId)
     swal({
   title: "ایا مطمینی?",
   text: "Once deleted, you will not be able to recover this imaginary file!",
@@ -25,6 +29,16 @@ const handleDelete=(id)=>{
 })
 .then((willDelete) => {
   if (willDelete) {
+    axios({
+method:"DELETE",
+url:`https://jsonplaceholder.typicode.com/users/${userId}`
+    }).then(res=>{
+        if(res.status===200){
+const newUser=user.filter(u=>u.id =! userId)
+
+setUser(newUser);
+}
+    })
     swal("Poof! Your imaginary file has been deleted!", {
       icon: "success",
     });
@@ -33,12 +47,15 @@ const handleDelete=(id)=>{
   }
 });
 }
+const handleSearch=(e)=>{
+    setUser(mainuser.filter(u=>u.name.includes(e.target.value)))
+}
     return (
         <div className={`${style.item_content} mt-5 p-4 container-fluid`}>
             <h4 className="text-center">مدیریت کاربران</h4>
             <div className="row my-2 mb-4 justify-content-between w-100 mx-0">
                 <div className="form-group col-10 col-md-6 col-lg-4">
-                    <input type="text" className="form-control shadow" placeholder="جستجو"/>
+                    <input type="text" className="form-control shadow" placeholder="جستجو" onChange={handleSearch}/>
                 </div>
                 <div className="col-2 text-start px-0">
                 <Link to="/user/add">
@@ -68,10 +85,8 @@ const handleDelete=(id)=>{
                         <td>{t.username}</td>
                         <td>{t.email}</td>
                         <td>
-                        <Link to="/user/add" state={"vue"}>
-                            <i className="fas fa-edit text-warning mx-2 pointer"></i>
-                            </Link>
-                            <i className="fas fa-trash text-danger mx-2 pointer" onClick={()=>{handleDelete()}}></i>
+                            <i className="fas fa-edit text-warning mx-2 pointer" onClick={()=>{navigte(`/user/add/${t.id}`)}}></i>
+                            <i className="fas fa-trash text-danger mx-2 pointer" onClick={()=>{handleDelete(t.id)}}></i>
                         </td>
                     </tr>
 
