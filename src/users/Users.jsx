@@ -4,11 +4,13 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import swal from 'sweetalert';
 import axios from 'axios';
 import { meAxios } from '../meAxios/meAxios';
+import NewCompo from '../Alert/Alert';
 
-const Users = ()=>{
+const Users = (props)=>{
     const [user,setUser]=useState([]);
     const [mainuser,setMainUser]=useState([]);
     const navigte=useNavigate()
+    const{Confirm,Alert}=props;
     useEffect(()=>{
         meAxios.get('https://jsonplaceholder.typicode.com/users').then(res=>{
             console.log(res);
@@ -19,14 +21,8 @@ const Users = ()=>{
             console.log("error oops");
         })
     },[])
-const handleDelete=(userId)=>{alert(userId)
-    swal({
-  title: "ایا مطمینی?",
-  text: "Once deleted, you will not be able to recover this imaginary file!",
-  icon: "warning",
-  buttons: true,
-  dangerMode: true,
-})
+const handleDelete=async(userId)=>{
+    await Confirm(`ایا مطمینی`)
 .then((willDelete) => {
   if (willDelete) {
     axios({
@@ -102,4 +98,4 @@ const handleSearch=(e)=>{
 
 }
 
-export default Users;
+export default NewCompo(Users);
